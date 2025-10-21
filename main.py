@@ -1,15 +1,18 @@
 from student import StudentManager
+from login import LoginManager
 
 def main():
     manager = StudentManager()
     manager.load_from_csv("students.csv")
+    login_manager = LoginManager(manager.students)
 
     while True:
         print("\n🎓 Student ID System")
         print("1. Add new student")
         print("2. List all students")
         print("3. Save to CSV")
-        print("4. Exit")
+        print("4. Login")
+        print("5. Exit")
 
         choice = input("Choose an option (1-4): ")
 
@@ -31,6 +34,9 @@ def main():
             manager.save_to_csv("students.csv")
 
         elif choice == '4':
+            login_manager.login()
+
+        elif choice == '5':
             print("Exiting. Goodbye!")
             break
 
