@@ -20,7 +20,6 @@ class Student:
             "Student ID": self.student_id
         }
 
-
 class StudentManager:
     def __init__(self):
         self.majors = {
@@ -56,7 +55,6 @@ class StudentManager:
         self.students.append(student)
         print(f"✅ Student added. ID: {full_id}")
 
-
     def calculate_checksum(self, digits_str):
         total = sum(int(d) for d in digits_str)
         return (10 - (total % 10)) % 10
@@ -78,3 +76,38 @@ class StudentManager:
                 writer.writerow(student.to_dict())
 
         print(f"💾 Students saved to {filename}")
+
+    def load_from_csv(self, filename):
+        try:
+            with open(filename, mode='r', newline='') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    # Detect major code from major name
+                    major_code = None
+                    for code, name in self.majors.items():
+                        if name == row["Major"]:
+                            major_code = code
+                            break
+
+                    if major_code is None:
+                        print(f"⚠️ Unknown major in CSV: {row['Major']}")
+                        continue
+
+                    student_id = row["Student ID"]
+                    serial_number = student_id[5:9] if len(student_id) >= 10 else ""
+
+                    student = Student(
+                        first_name=row["First Name"],
+                        last_name=row["Last Name"],
+                        major_code=major_code,
+                        major_name=row["Major"],
+                        start_year=row["Start Year"],
+                        serial_number=serial_number,
+                        student_id=student_id
+                    )
+
+                    self.students.append(student)
+
+            print(f"✅ Loaded {len(self.students)} students from {filename}")
+        except FileNotFoundError:
+            print(f"⚠️ File {filename} not found. Starting with empty student list.")
