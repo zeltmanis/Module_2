@@ -56,7 +56,23 @@ class StudentManager:
         print(f"✅ Student added. ID: {full_id}")
 
     def calculate_checksum(self, digits_str):
-        total = sum(int(d) for d in digits_str)
+        """
+        Calculate Luhn checksum for the given base ID string (without the check digit).
+        Doubling starts from the rightmost digit's neighbor (the second-to-last digit overall).
+        """
+        digits = [int(d) for d in digits_str]
+        total = 0
+        reverse_digits = digits[::-1]
+
+        for i, d in enumerate(reverse_digits):
+            if i % 2 == 1:  # <-- shift parity to match official Luhn standard
+                doubled = d * 2
+                if doubled > 9:
+                    doubled -= 9
+                total += doubled
+            else:
+                total += d
+
         return (10 - (total % 10)) % 10
 
     def list_students(self):
@@ -111,3 +127,11 @@ class StudentManager:
             print(f"✅ Loaded {len(self.students)} students from {filename}")
         except FileNotFoundError:
             print(f"⚠️ File {filename} not found. Starting with empty student list.")
+
+    def validate_id(self, student_id):
+        digits = [int(d) for d in student_id]
+        check_digit = digits[-1]
+        digits = digits[:-1]
+
+        calculated_checksum = self.calculate_checksum("".join(map(str, digits)))
+        return check_digit == calculated_checksum
