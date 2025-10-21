@@ -129,9 +129,13 @@ class StudentManager:
             print(f"⚠️ File {filename} not found. Starting with empty student list.")
 
     def validate_id(self, student_id):
+        # Reject non-digit IDs immediately
+        if not isinstance(student_id, str) or not student_id.isdigit():
+            return False
+
         digits = [int(d) for d in student_id]
         check_digit = digits[-1]
-        digits = digits[:-1]
+        base_digits = digits[:-1]
 
-        calculated_checksum = self.calculate_checksum("".join(map(str, digits)))
+        calculated_checksum = self.calculate_checksum("".join(map(str, base_digits)))
         return check_digit == calculated_checksum
