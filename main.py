@@ -1,5 +1,6 @@
 from student import StudentManager
 from login import LoginManager
+from error_detection_test import generate_error_report
 
 def main():
     manager = StudentManager()
@@ -12,9 +13,11 @@ def main():
         print("2. List all students")
         print("3. Save to CSV")
         print("4. Login")
-        print("5. Exit")
+        print("5. Run Error Detection Test")
+        print("6. Exit")
 
-        choice = input("Choose an option (1-4): ")
+
+        choice = input("Choose an option (1-6): ")
 
         if choice == '1':
             first_name = input("First name: ").strip()
@@ -37,6 +40,11 @@ def main():
             login_manager.login()
 
         elif choice == '5':
+            print("\n🧪 Running Error Detection Test...")
+            generate_error_report(input_file="students.csv")
+            print("✅ Test finished. Check 'error_detection_results.csv' for details.")
+
+        elif choice == '6':
             print("Exiting. Goodbye!")
             break
 
